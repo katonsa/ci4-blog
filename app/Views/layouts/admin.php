@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= (isset($title) ? "{$title} - " : "") . "Blog Admin" ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/trix@2.1.0/dist/trix.css">
 </head>
 <body>
     <!-- Navbar -->
@@ -62,5 +63,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/trix@2.1.0/dist/trix.umd.min.js"></script>
 </body>
 </html>
