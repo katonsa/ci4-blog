@@ -15,7 +15,7 @@
                 </p>
 
                 <div class="post-content mb-4">
-                    <?= nl2br(esc($post['content'])) ?>
+                    <?= $post['content'] ?>
                 </div>
             </article>
 

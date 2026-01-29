@@ -30,13 +30,11 @@
 
             <div class="mb-3">
                 <label for="content" class="form-label">Content <span class="text-danger">*</span></label>
-                <textarea class="form-control <?= (isset($validation) && $validation->hasError('content')) ? 'is-invalid' : '' ?>"
-                          id="content"
-                          name="content"
-                          rows="10"
-                          required><?= old('content', $post['content'] ?? '') ?></textarea>
+                <input id="content" name="content" type="hidden"
+                       value="<?= old('content', $post['content'] ?? '') ?>">
+                <trix-editor input="content" class="trix-content <?= (isset($validation) && $validation->hasError('content')) ? 'is-invalid' : '' ?>"></trix-editor>
                 <?php if (isset($validation) && $validation->hasError('content')): ?>
-                    <div class="invalid-feedback"><?= $validation->getError('content') ?></div>
+                    <div class="text-danger small"><?= $validation->getError('content') ?></div>
                 <?php endif; ?>
             </div>
 
@@ -65,4 +63,16 @@
         </form>
     </div>
 </div>
+
+<style>
+    trix-editor {
+        min-height: 300px;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+    }
+    trix-editor:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+</style>
 <?= $this->endSection() ?>
