@@ -15,6 +15,14 @@ class Posts extends BaseController
     }
 
     /**
+     * Check if current user can manage the post (admin or author)
+     */
+    protected function canManagePost(int $authorId): bool
+    {
+        return $this->hasRole('admin') || session()->get('user_id') == $authorId;
+    }
+
+    /**
      * Display all posts
      */
     public function index()
@@ -25,9 +33,11 @@ class Posts extends BaseController
             ->findAll();
 
         $data = [
-            'title'  => 'Posts',
-            'active' => 'posts',
-            'posts'  => $posts,
+            'title'       => 'Posts',
+            'active'      => 'posts',
+            'posts'       => $posts,
+            'currentUserId' => session()->get('user_id'),
+            'isAdmin'     => $this->hasRole('admin'),
         ];
 
         return view('admin/posts/index', $data);
@@ -76,6 +86,11 @@ class Posts extends BaseController
             return redirect()->to('/admin/posts')->with('error', 'Post not found.');
         }
 
+        // Check if user can manage this post
+        if (!$this->canManagePost($post['author_id'])) {
+            return redirect()->to('/admin/posts')->with('error', 'You do not have permission to edit this post.');
+        }
+
         $data = [
             'title'  => 'Edit Post',
             'active' => 'posts',
@@ -94,6 +109,11 @@ class Posts extends BaseController
 
         if (!$post) {
             return redirect()->to('/admin/posts')->with('error', 'Post not found.');
+        }
+
+        // Check if user can manage this post
+        if (!$this->canManagePost($post['author_id'])) {
+            return redirect()->to('/admin/posts')->with('error', 'You do not have permission to edit this post.');
         }
 
         $data = [
@@ -118,6 +138,11 @@ class Posts extends BaseController
 
         if (!$post) {
             return redirect()->to('/admin/posts')->with('error', 'Post not found.');
+        }
+
+        // Check if user can manage this post
+        if (!$this->canManagePost($post['author_id'])) {
+            return redirect()->to('/admin/posts')->with('error', 'You do not have permission to delete this post.');
         }
 
         if ($this->postModel->delete($id)) {

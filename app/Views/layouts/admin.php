@@ -37,6 +37,19 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><h6 class="dropdown-header"><?= session()->get('email') ?></h6></li>
+                            <li>
+                                <span class="dropdown-item-text">
+                                    <?php
+                                    $userId = session()->get('user_id');
+                                    if ($userId):
+                                        $userModel = new \App\Models\UserModel();
+                                        $roles = $userModel->getRoles($userId);
+                                        foreach ($roles as $role):
+                                    ?>
+                                        <span class="badge bg-primary"><?= esc(ucfirst($role['name'])) ?></span>
+                                    <?php endforeach; endif; ?>
+                                </span>
+                            </li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/logout">Logout</a></li>
                         </ul>
