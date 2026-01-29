@@ -24,13 +24,23 @@
                     </thead>
                     <tbody>
                         <?php foreach ($posts as $post): ?>
+                            <?php $canManage = $isAdmin || $post['author_id'] == $currentUserId; ?>
                             <tr>
                                 <td>
-                                    <a href="/admin/posts/edit/<?= $post['id'] ?>">
+                                    <?php if ($canManage): ?>
+                                        <a href="/admin/posts/edit/<?= $post['id'] ?>">
+                                            <?= esc($post['title']) ?>
+                                        </a>
+                                    <?php else: ?>
                                         <?= esc($post['title']) ?>
-                                    </a>
+                                    <?php endif; ?>
                                 </td>
-                                <td><?= esc($post['author_name']) ?></td>
+                                <td>
+                                    <?= esc($post['author_name']) ?>
+                                    <?php if ($post['author_id'] == $currentUserId): ?>
+                                        <span class="badge bg-info text-dark ms-1">You</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td>
                                     <span class="badge bg-<?= $post['status'] === 'published' ? 'success' : 'secondary' ?>">
                                         <?= ucfirst($post['status']) ?>
@@ -38,11 +48,15 @@
                                 </td>
                                 <td><?= date('M d, Y', strtotime($post['created_at'])) ?></td>
                                 <td class="text-end">
-                                    <a href="/admin/posts/edit/<?= $post['id'] ?>" class="btn btn-sm btn-outline-primary">Edit</a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger"
-                                            onclick="confirmDelete(<?= $post['id'] ?>, '<?= esc($post['title'], 'js') ?>')">
-                                        Delete
-                                    </button>
+                                    <?php if ($canManage): ?>
+                                        <a href="/admin/posts/edit/<?= $post['id'] ?>" class="btn btn-sm btn-outline-primary">Edit</a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                                onclick="confirmDelete(<?= $post['id'] ?>, '<?= esc($post['title'], 'js') ?>')">
+                                            Delete
+                                        </button>
+                                    <?php else: ?>
+                                        <span class="text-muted small">Read-only</span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
