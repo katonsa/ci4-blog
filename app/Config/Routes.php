@@ -28,4 +28,9 @@ $routes->group('/admin', ['filter' => 'auth'], function ($routes) {
         $routes->post('update/(:num)', 'Admin\Posts::update/$1');
         $routes->get('delete/(:num)', 'Admin\Posts::delete/$1');
     });
+
+    // Users routes
+    $routes->group('users', function ($routes) {
+        $routes->get('/', 'Admin\Users::index');
+    });
 });
