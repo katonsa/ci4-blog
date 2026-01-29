@@ -8,6 +8,16 @@ class Dashboard extends BaseController
 {
     public function index()
     {
-        return 'Welcome to Admin Dashboard!';
+        // TODO: Get real stats from PostModel after Phase 2
+        $data = [
+            'title'          => 'Dashboard',
+            'active'         => 'dashboard',
+            'totalPosts'     => 0,
+            'publishedPosts' => 0,
+            'draftPosts'     => 0,
+            'recentPosts'    => [],
+        ];
+
+        return view('admin/dashboard', $data);
     }
 }
