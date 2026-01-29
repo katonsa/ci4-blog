@@ -19,8 +19,8 @@ $routes->get('/logout', 'Auth::logout');
 $routes->group('/admin', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'Admin\Dashboard::index');
 
-    // Posts routes
-    $routes->group('posts', function ($routes) {
+    // Posts routes - admin and writer can access
+    $routes->group('posts', ['filter' => 'role:admin,writer'], function ($routes) {
         $routes->get('/', 'Admin\Posts::index');
         $routes->get('create', 'Admin\Posts::create');
         $routes->post('store', 'Admin\Posts::store');
@@ -31,8 +31,8 @@ $routes->group('/admin', ['filter' => 'auth'], function ($routes) {
         $routes->delete('delete/(:num)', 'Admin\Posts::delete/$1');
     });
 
-    // Users routes
-    $routes->group('users', function ($routes) {
+    // Users routes - admin only
+    $routes->group('users', ['filter' => 'role:admin'], function ($routes) {
         $routes->get('/', 'Admin\Users::index');
         $routes->get('create', 'Admin\Users::create');
         $routes->post('store', 'Admin\Users::store');

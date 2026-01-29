@@ -19,12 +19,16 @@
                     <li class="nav-item">
                         <a class="nav-link <?= (isset($active) && $active === 'dashboard') ? 'active' : '' ?>" href="/admin">Dashboard</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?= (isset($active) && $active === 'posts') ? 'active' : '' ?>" href="/admin/posts">Posts</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?= (isset($active) && $active === 'users') ? 'active' : '' ?>" href="/admin/users">Users</a>
-                    </li>
+                    <?php if (has_any_role(['admin', 'writer'])): ?>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (isset($active) && $active === 'posts') ? 'active' : '' ?>" href="/admin/posts">Posts</a>
+                        </li>
+                    <?php endif; ?>
+                    <?php if (is_admin()): ?>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (isset($active) && $active === 'users') ? 'active' : '' ?>" href="/admin/users">Users</a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
