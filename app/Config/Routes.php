@@ -26,11 +26,20 @@ $routes->group('/admin', ['filter' => 'auth'], function ($routes) {
         $routes->post('store', 'Admin\Posts::store');
         $routes->get('edit/(:num)', 'Admin\Posts::edit/$1');
         $routes->post('update/(:num)', 'Admin\Posts::update/$1');
-        $routes->get('delete/(:num)', 'Admin\Posts::delete/$1');
+        $routes->put('update/(:num)', 'Admin\Posts::update/$1');
+        $routes->post('delete/(:num)', 'Admin\Posts::delete/$1');
+        $routes->delete('delete/(:num)', 'Admin\Posts::delete/$1');
     });
 
     // Users routes
     $routes->group('users', function ($routes) {
         $routes->get('/', 'Admin\Users::index');
+        $routes->get('create', 'Admin\Users::create');
+        $routes->post('store', 'Admin\Users::store');
+        $routes->get('edit/(:num)', 'Admin\Users::edit/$1');
+        $routes->post('update/(:num)', 'Admin\Users::update/$1');
+        $routes->put('update/(:num)', 'Admin\Users::update/$1');
+        $routes->post('delete/(:num)', 'Admin\Users::delete/$1');
+        $routes->delete('delete/(:num)', 'Admin\Users::delete/$1');
     });
 });

@@ -63,6 +63,7 @@
 
 <form id="deleteForm" method="POST" action="/admin/users/delete/" style="display: none;">
     <?= csrf_field() ?>
+    <input type="hidden" name="_method" value="DELETE">
     <input type="hidden" name="id" id="deleteId">
 </form>
 

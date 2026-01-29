@@ -55,6 +55,7 @@
 
 <form id="deleteForm" method="POST" action="/admin/posts/delete/" style="display: none;">
     <?= csrf_field() ?>
+    <input type="hidden" name="_method" value="DELETE">
     <input type="hidden" name="id" id="deleteId">
 </form>
 
