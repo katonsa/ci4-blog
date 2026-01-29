@@ -3,19 +3,21 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Models\PostModel;
 
 class Dashboard extends BaseController
 {
     public function index()
     {
-        // TODO: Get real stats from PostModel after Phase 2
+        $postModel = new PostModel();
+
         $data = [
             'title'          => 'Dashboard',
             'active'         => 'dashboard',
-            'totalPosts'     => 0,
-            'publishedPosts' => 0,
-            'draftPosts'     => 0,
-            'recentPosts'    => [],
+            'totalPosts'     => $postModel->countAll(),
+            'publishedPosts' => $postModel->countByStatus('published'),
+            'draftPosts'     => $postModel->countByStatus('draft'),
+            'recentPosts'    => $postModel->getRecentWithAuthor(5),
         ];
 
         return view('admin/dashboard', $data);
