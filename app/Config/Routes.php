@@ -7,6 +7,9 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 
+// Public blog routes
+$routes->get('post/(:segment)', 'Home::view/$1');
+
 // Auth routes
 $routes->get('/login', 'Auth::login');
 $routes->post('/login', 'Auth::attemptLogin');
