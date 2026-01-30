@@ -54,21 +54,72 @@ class PostModel extends Model
      */
     protected function generateSlug(array $data): array
     {
-        if (isset($data['data']['title'])) {
-            $title = $data['data']['title'];
-            $slug = url_title($title, '-', true);
-
-            // Check if slug exists, append number if needed
-            $count = $this->where('slug', $slug)->countAllResults(false);
-
-            if ($count > 0) {
-                $slug .= '-' . ($count + 1);
-            }
-
-            $data['data']['slug'] = $slug;
+        if (!isset($data['data']['title'])) {
+            return $data;
         }
 
+        $title = $data['data']['title'];
+        $baseSlug = url_title($title, '-', true);
+        $currentId = $this->extractId($data);
+
+        if ($currentId !== null) {
+            $current = $this->find($currentId);
+            if ($current && ($current['title'] ?? null) === $title) {
+                $data['data']['slug'] = $current['slug'];
+                return $data;
+            }
+        }
+
+        $data['data']['slug'] = $this->uniqueSlug($baseSlug, $currentId);
+
         return $data;
+    }
+
+    private function extractId(array $data): ?int
+    {
+        if (!isset($data['id'])) {
+            return null;
+        }
+
+        $id = $data['id'];
+
+        if (is_array($id)) {
+            $id = $id[0] ?? null;
+        }
+
+        if ($id === null) {
+            return null;
+        }
+
+        return (int) $id;
+    }
+
+    private function uniqueSlug(string $baseSlug, ?int $ignoreId = null): string
+    {
+        $builder = $this->builder();
+        $builder->select('slug');
+        $builder->like('slug', $baseSlug, 'after');
+
+        if ($ignoreId !== null) {
+            $builder->where($this->primaryKey . ' !=', $ignoreId);
+        }
+
+        $existing = array_column($builder->get()->getResultArray(), 'slug');
+
+        if (!in_array($baseSlug, $existing, true)) {
+            return $baseSlug;
+        }
+
+        $maxSuffix = 1;
+        $pattern = '/^' . preg_quote($baseSlug, '/') . '-(\d+)$/';
+
+        foreach ($existing as $slug) {
+            if (preg_match($pattern, $slug, $matches)) {
+                $maxSuffix = max($maxSuffix, (int) $matches[1]);
+            }
+        }
+
+        return $baseSlug . '-' . ($maxSuffix + 1);
     }
 
     /**

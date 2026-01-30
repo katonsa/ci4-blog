@@ -39,8 +39,9 @@ class Posts extends BaseController
     public function create()
     {
         $data = [
-            'title'  => 'Create Post',
-            'active' => 'posts',
+            'title'      => 'Create Post',
+            'active'     => 'posts',
+            'validation' => session()->getFlashdata('validation'),
         ];
 
         return view('admin/posts/form', $data);
@@ -51,6 +52,10 @@ class Posts extends BaseController
      */
     public function store()
     {
+        if (!$this->validate($this->postModel->getValidationRules())) {
+            return redirect()->back()->withInput()->with('validation', $this->validator);
+        }
+
         $data = [
             'title'     => $this->request->getPost('title'),
             'content'   => $this->request->getPost('content'),
@@ -62,7 +67,7 @@ class Posts extends BaseController
             return redirect()->to('/admin/posts')->with('success', 'Post created successfully.');
         }
 
-        return redirect()->back()->withInput()->with('errors', $this->postModel->errors());
+        return redirect()->back()->withInput()->with('error', 'Failed to create post.');
     }
 
     /**
@@ -77,9 +82,10 @@ class Posts extends BaseController
         }
 
         $data = [
-            'title'  => 'Edit Post',
-            'active' => 'posts',
-            'post'   => $post,
+            'title'      => 'Edit Post',
+            'active'     => 'posts',
+            'post'       => $post,
+            'validation' => session()->getFlashdata('validation'),
         ];
 
         return view('admin/posts/form', $data);
@@ -96,6 +102,10 @@ class Posts extends BaseController
             return redirect()->to('/admin/posts')->with('error', 'Post not found.');
         }
 
+        if (!$this->validate($this->postModel->getValidationRules())) {
+            return redirect()->back()->withInput()->with('validation', $this->validator);
+        }
+
         $data = [
             'title'   => $this->request->getPost('title'),
             'content' => $this->request->getPost('content'),
@@ -106,7 +116,7 @@ class Posts extends BaseController
             return redirect()->to('/admin/posts')->with('success', 'Post updated successfully.');
         }
 
-        return redirect()->back()->withInput()->with('errors', $this->postModel->errors());
+        return redirect()->back()->withInput()->with('error', 'Failed to update post.');
     }
 
     /**
