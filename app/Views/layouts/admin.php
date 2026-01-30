@@ -20,12 +20,16 @@
                     <li class="nav-item">
                         <a class="nav-link <?= (isset($active) && $active === 'dashboard') ? 'active' : '' ?>" href="/admin">Dashboard</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?= (isset($active) && $active === 'posts') ? 'active' : '' ?>" href="/admin/posts">Posts</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?= (isset($active) && $active === 'users') ? 'active' : '' ?>" href="/admin/users">Users</a>
-                    </li>
+                    <?php if (has_any_role(['admin', 'writer'])): ?>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (isset($active) && $active === 'posts') ? 'active' : '' ?>" href="/admin/posts">Posts</a>
+                        </li>
+                    <?php endif; ?>
+                    <?php if (is_admin()): ?>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (isset($active) && $active === 'users') ? 'active' : '' ?>" href="/admin/users">Users</a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
@@ -34,6 +38,19 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><h6 class="dropdown-header"><?= session()->get('email') ?></h6></li>
+                            <li>
+                                <span class="dropdown-item-text">
+                                    <?php
+                                    $userId = session()->get('user_id');
+                                    if ($userId):
+                                        $userModel = new \App\Models\UserModel();
+                                        $roles = $userModel->getRoles($userId);
+                                        foreach ($roles as $role):
+                                    ?>
+                                        <span class="badge bg-primary"><?= esc(ucfirst($role['name'])) ?></span>
+                                    <?php endforeach; endif; ?>
+                                </span>
+                            </li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/logout">Logout</a></li>
                         </ul>

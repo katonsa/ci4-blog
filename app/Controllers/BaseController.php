@@ -34,12 +34,50 @@ abstract class BaseController extends Controller
     {
         // Load here all helpers you want to be available in your controllers that extend BaseController.
         // Caution: Do not put the this below the parent::initController() call below.
-        $this->helpers = ['form', 'url', 'text'];
+        $this->helpers = ['form', 'url', 'text', 'auth'];
 
         // Caution: Do not edit this line.
         parent::initController($request, $response, $logger);
 
         // Preload any models, libraries, etc, here.
         // $this->session = service('session');
+    }
+
+    /**
+     * Check if current user has the given role
+     *
+     * @param string $role Role name to check
+     * @return bool
+     */
+    protected function hasRole(string $role): bool
+    {
+        $userId = session()->get('user_id');
+
+        if (!$userId) {
+            return false;
+        }
+
+        $userModel = new \App\Models\UserModel();
+        $userRoles = $userModel->getRoles($userId);
+        $roleNames = array_column($userRoles, 'name');
+
+        return in_array($role, $roleNames);
+    }
+
+    /**
+     * Check if current user has any of the given roles
+     *
+     * @param array $roles Array of role names to check
+     * @return bool
+     */
+    protected function hasAnyRole(array $roles): bool
+    {
+        foreach ($roles as $role) {
+            if ($this->hasRole($role)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
